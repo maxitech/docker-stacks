@@ -4,14 +4,21 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Installiere System-Dependencies
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    gfortran \
+    libopenblas-dev \
+    liblapack-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 
 # Kopiere Requirements
 COPY requirements.txt .
 
 # Installiere Python-Dependencies
-RUN pip install --no-cache-dir "numpy<2" && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Kopiere Service-Code
 COPY classifier_service.py .
