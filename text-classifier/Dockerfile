@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
 
 # Installiere Python-Dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir "numpy<2" && pip install --no-cache-dir -r requirements.txt
 
 # Kopiere Service-Code
 COPY classifier_service.py .
