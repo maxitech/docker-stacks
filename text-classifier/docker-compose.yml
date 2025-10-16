@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  text-classifier:
+    build: .
+    container_name: text-classifier
+    restart: unless-stopped
+    
+    # KEIN ports mapping -> nur im Docker-Netzwerk erreichbar!
+    # ports:
+    #   - "8000:8000"  # NICHT aktivieren!
+    
+    networks:
+      - n8n-stack_n8n-network 
+    
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=Europe/Berlin
+    
+    # Resource Limits (wichtig für Server!)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'      # Max 2 CPU Cores
+          memory: 3G       # Max 3GB RAM (Modell braucht ~2GB)
+        reservations:
+          cpus: '0.5'      # Min 0.5 CPU Core
+          memory: 1G       # Min 1GB RAM
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Health Check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s  # Modell braucht ~60s zum Laden
+
+networks:
+  n8n-stack_n8n-network:
+    external: true  # Nutze bestehendes n8n Netzwerk
