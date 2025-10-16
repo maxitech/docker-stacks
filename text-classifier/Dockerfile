@@ -1,18 +1,7 @@
-FROM python:3.11-slim
+FROM python:3.11
 
 # Setze Arbeitsverzeichnis
 WORKDIR /app
-
-# Installiere System-Dependencies
-
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    gfortran \
-    libopenblas-dev \
-    liblapack-dev \
-    && rm -rf /var/lib/apt/lists/*
-
 
 # Kopiere Requirements
 COPY requirements.txt .
